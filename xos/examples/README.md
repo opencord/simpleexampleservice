@@ -8,7 +8,7 @@ The following describes a demo that brings up a `SimpleExampleServiceInstance`. 
 2. Run the TOSCA recipe
 
     TOSCA_URL=$(minikube service xos-tosca --url)
-    curl -H "xos-username: $ACCOUNT" -H "xos-password: $PASSWORD" -X POST --data-binary @$RECIPE $TOSCA_URL/run    
+    curl -H "xos-username: $USERNAME" -H "xos-password: $PASSWORD" -X POST --data-binary @SimpleExampleServiceInstance.yaml $TOSCA_URL/run
 
 3. Wait a few seconds for the Kubernetes instances to be created.
 
