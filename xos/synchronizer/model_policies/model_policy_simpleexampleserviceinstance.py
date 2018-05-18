@@ -49,7 +49,8 @@ class SimpleExampleServiceInstancePolicy(Policy):
                            "url": image.url})
         fields["images"] = images
 
-        template = jinja2.Template(open("model_policies/index.html.j2").read())
+        template_fn = os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), "index.html.j2")
+        template = jinja2.Template(open(template_fn).read())
 
         return template.render(fields)
 
@@ -101,9 +102,9 @@ class SimpleExampleServiceInstancePolicy(Policy):
             compute_instance = service_instance.compute_instance
             mnt = compute_instance.leaf_model.kubernetes_config_volume_mounts.first()
             config = mnt.config
-            new_data = {"index.html": self.render_index(service_instance)}
+            new_data = json.dumps({"index.html": self.render_index(service_instance)})
             if (new_data != config.data):
-                config.data = json.dumps(new_data)
+                config.data = new_data
                 config.save(always_update_timestamp=True)
                 # Force the Kubernetes syncstep
                 compute_instance.save(always_update_timestamp=True)
