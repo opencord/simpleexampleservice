@@ -215,7 +215,7 @@ class TestSimpleExampleServiceInstancePolicy(unittest.TestCase):
             self.assertEqual(deleted_ksi, ksi)
 
             # The serviceInstance should have had its compute_instance set to none
-            self.assertEqual(si.compute_instance.None)
+            self.assertEqual(si.compute_instance, None)
 
             # The SimpleExampleServiceInstance should have been saved
             self.assertEqual(sesi_save.call_count, 1)
