@@ -132,7 +132,7 @@ helm install --name cord-kafka --set replicas=1 incubator/kafka
 ```python
 import json
 from kafka import KafkaProducer
-producer = KafkaProducer(bootstrap_servers="cord-kafka-kafka")
+producer = KafkaProducer(bootstrap_servers="cord-kafka")
 producer.send("SimpleExampleEvent", json.dumps({"service_instance": "My Simple Example Service Instance", "tenant_message": "Earth"}))
 producer.flush()
 ```
