@@ -42,34 +42,34 @@ The following subsections work through a quick demonstration of `SimpleExampleSe
 
 ### Prerequisites ###
 
-This document assumes that you have already installed Kubernetes in your development environment.
+This document assumes that you have already installed Kubernetes in your development environment. If you haven't done so already, see [QuickStart](../quickstart.md).
 
 ### Deploy the necessary profiles ###
 
 It's necessary for us to deploy three helm charts, `xos-core`, `base-kubernetes`. and `demo-simpleexampleservice`. 
 
-> Note: If you've already installed a different set of XOS profile helm charts, such as the `rcord-lite` profile, then you may wish to uninstall those, as there's no guarantee that the `base-kubernetes` and `demo-simpleexampleservice` helm-charts can be layered on top of an existing XOS profile.
+If you followed the quickstart, then you should already have the proper helm charts installed and you may skip this subsection. If you're joining this guide after using an alternative method of installing Kubernetes, then you'll want to proceed with installing the following helm charts:
 
-If you have not already done so, execute the following commands:
+> Note: If you've already installed a different set of XOS profile helm charts, such as the `rcord-lite` profile, then you may wish to uninstall those, as there's no guarantee that the `base-kubernetes` and `demo-simpleexampleservice` helm-charts can be layered on top of an existing XOS profile.
 
 ```bash
 # Go into the helm-charts repository
 cd ~/cord/helm-charts
 
 # Initialize helm
-helm init
+sudo helm init
 
 # Install the xos-core helm chart
-helm dep update xos-core
-helm install xos-core -n xos-core
+sudo helm dep update xos-core
+sudo helm install xos-core -n xos-core
 
 # Install the base-kubernetes helm chart
-helm dep update xos-profiles/base-kubernetes
-helm install xos-profiles/base-kubernetes -n base-kubernetes
+sudo helm dep update xos-profiles/base-kubernetes
+sudo helm install xos-profiles/base-kubernetes -n base-kubernetes
 
 # Install the demo-simpleexampleservice helm chart
-helm dep update xos-profiles/demo-simpleexampleservice
-helm install xos-profiles/demo-simpleexampleservice -n demo-simpleexampleservice
+sudo helm dep update xos-profiles/demo-simpleexampleservice
+sudo helm install xos-profiles/demo-simpleexampleservice -n demo-simpleexampleservice
 ```
 
 The helm charts above install successive layers of CORD. The first chart, `xos-core` installs core components such as the XOS core, database, TOSCA engine, etc. The second chart, `base-kubernetes` installs the XOS Kubernetes Service, which provides modeling and synchronizers for instantiating Kubernetes resources using the XOS data model. The final helm chart, `demo-simpleexampleservice` installs the synchronizer for `SimpleExampleService`, including registering models with the core.
@@ -84,9 +84,26 @@ This step will provision a `SimpleExampleServiceInstance`. This ServiceInstance 
 
 We will demonstrate using TOSCA to create the `SimpleExampleServiceInstance`, but this is not the only mechanism available. The steps here could alternatively be done in the XOS GUI, by using the XOS REST or gRPC APIs, or implemented as part of the model policies of some other service. 
 
+* Check out the SimpleExampleService repository
+
+If you've already checked out the CORD code, for example using repo, then make note the path to the `simpleexampleservice` code as we'll be using it in a few minutes:
+
+```bash
+SIMPLEEXAMPLESERVICE_PATH=~/cord/xos_services/simpleexampleservice
+```
+
+Otherwise, check out the simpleexampleservice repository now:
+
+```bash
+cd ~
+git clone https://github.com/opencord/simpleexampleservice
+SIMPLEEXAMPLESERVICE_PATH=~/simpleexampleservice
+```
+
 * Set your username and password.
 
 ```bash
+# Customize as necessary for your deployment.
 USERNAME=admin@opencord.org
 PASSWORD=letmein
 ```
@@ -94,8 +111,8 @@ PASSWORD=letmein
 * Run the TOSCA recipe to create a `SimpleExampleServiceInstance`.
 
 ```bash
-TOSCA_URL=$(minikube service xos-tosca --url)
-TOSCA_FN=~/cord/orchestration/xos_services/simpleexampleservice/xos/examples/SimpleExampleServiceInstance.yaml
+TOSCA_URL=http://$( hostname ):30007
+TOSCA_FN=$SIMPLEEXAMPLESERVICE_PATH/xos/examples/SimpleExampleServiceInstance.yaml
 curl -H "xos-username: $USERNAME" -H "xos-password: $PASSWORD" -X POST --data-binary @$TOSCA_FN $TOSCA_URL/run
 ```
 
@@ -104,8 +121,8 @@ curl -H "xos-username: $USERNAME" -H "xos-password: $PASSWORD" -X POST --data-bi
 * View the status. 
 
 ```bash
-CHAMELEON_URL=$(minikube service xos-chameleon --url)
-python ~/cord/orchestration/xos_services/simpleexampleservice/xos/examples//show-instances.py $CHAMELEON_URL $USERNAME $PASSWORD
+CHAMELEON_URL=http://$( hostname ):30006
+python $SIMPLEEXAMPLESERVICE_PATH/xos/examples/show-instances.py $CHAMELEON_URL $USERNAME $PASSWORD
 ```
 
 > Note: You may have to re-execute the above a few times while waiting for the objects to be created. If all is successful, eventually you will see an IP address assigned to the service instance. 
@@ -118,12 +135,14 @@ python ~/cord/orchestration/xos_services/simpleexampleservice/xos/examples//show
 
 The event bus is an optional mechanism that may be used to interact with services. `SimpleExampleService` implements a single `EventStep`, which listens on a Kafka topic and allows the `tenant_message` to be updated.  
 
-* Ensure Kafka is running
+* Launch the Kafka Helm Chart, if you have not already done so:
 
 ```bash
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --name cord-kafka --set replicas=1 incubator/kafka
+sudo helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+sudo helm install --name cord-kafka --set replicas=1 incubator/kafka
 ```
+
+* Wait for Kafka to be ready. Use `sudo kubectl get pods` to make sure the Kafka containers are in Running state. 
 
 * Send an Event to update a web page
 
