@@ -44,6 +44,8 @@ The following subsections work through a quick demonstration of `SimpleExampleSe
 
 This document assumes that you have already installed Kubernetes in your development environment. If you haven't done so already, see [QuickStart](../quickstart.md).
 
+> Note: Depending on the method that was used to deploy your Kubernetes installation, your installation may require root privilege to interact with Kubernetes. If so, then you may need to use `sudo` with many of the commands in this tutorial, for example `sudo helm init` instead of `helm init`. 
+
 ### Deploy the necessary profiles ###
 
 It's necessary for us to deploy three helm charts, `xos-core`, `base-kubernetes`. and `demo-simpleexampleservice`. 
@@ -57,19 +59,19 @@ If you followed the quickstart, then you should already have the proper helm cha
 cd ~/cord/helm-charts
 
 # Initialize helm
-sudo helm init
+helm init
 
 # Install the xos-core helm chart
-sudo helm dep update xos-core
-sudo helm install xos-core -n xos-core
+helm dep update xos-core
+helm install xos-core -n xos-core
 
 # Install the base-kubernetes helm chart
-sudo helm dep update xos-profiles/base-kubernetes
-sudo helm install xos-profiles/base-kubernetes -n base-kubernetes
+helm dep update xos-profiles/base-kubernetes
+helm install xos-profiles/base-kubernetes -n base-kubernetes
 
 # Install the demo-simpleexampleservice helm chart
-sudo helm dep update xos-profiles/demo-simpleexampleservice
-sudo helm install xos-profiles/demo-simpleexampleservice -n demo-simpleexampleservice
+helm dep update xos-profiles/demo-simpleexampleservice
+helm install xos-profiles/demo-simpleexampleservice -n demo-simpleexampleservice
 ```
 
 The helm charts above install successive layers of CORD. The first chart, `xos-core` installs core components such as the XOS core, database, TOSCA engine, etc. The second chart, `base-kubernetes` installs the XOS Kubernetes Service, which provides modeling and synchronizers for instantiating Kubernetes resources using the XOS data model. The final helm chart, `demo-simpleexampleservice` installs the synchronizer for `SimpleExampleService`, including registering models with the core.
@@ -138,11 +140,11 @@ The event bus is an optional mechanism that may be used to interact with service
 * Launch the Kafka Helm Chart, if you have not already done so:
 
 ```bash
-sudo helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-sudo helm install --name cord-kafka --set replicas=1 incubator/kafka
+helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+helm install --name cord-kafka --set replicas=1 incubator/kafka
 ```
 
-* Wait for Kafka to be ready. Use `sudo kubectl get pods` to make sure the Kafka containers are in Running state. 
+* Wait for Kafka to be ready. Use `kubectl get pods` to make sure the Kafka containers are in Running state. 
 
 * Send an Event to update a web page
 
