@@ -91,7 +91,7 @@ We will demonstrate using TOSCA to create the `SimpleExampleServiceInstance`, bu
 If you've already checked out the CORD code, for example using repo, then make note the path to the `simpleexampleservice` code as we'll be using it in a few minutes:
 
 ```bash
-SIMPLEEXAMPLESERVICE_PATH=~/cord/xos_services/simpleexampleservice
+SIMPLEEXAMPLESERVICE_PATH=~/cord/orchestration/xos_services/simpleexampleservice
 ```
 
 Otherwise, check out the simpleexampleservice repository now:
