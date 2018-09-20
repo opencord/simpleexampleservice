@@ -14,7 +14,7 @@
 
 # xosproject/simpleexampleservice-synchronizer
 
-FROM xosproject/xos-synchronizer-base:2.0.0
+FROM xosproject/xos-synchronizer-base:2.1.5
 
 COPY xos/synchronizer /opt/xos/synchronizers/simpleexampleservice
 COPY VERSION /opt/xos/synchronizers/simpleexampleservice/
