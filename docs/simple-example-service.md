@@ -131,7 +131,16 @@ python $SIMPLEEXAMPLESERVICE_PATH/xos/examples/show-instances.py $CHAMELEON_URL 
 
 * View the web page
 
-    Enter one of the other Kubernetes containers (`kubectl get pods` can be used to retrieve a list), any container such as one of the synchronizer containers will do, and perform a curl on the IP address obtained in the previous step.
+Enter one of the other Kubernetes containers, where `kubectl get pods` can be
+used to retrieve a list. Any of the containers will do (e.g., one of the synchronizer
+containers).
+
+```bash
+kubectl exec -it <pod-name> bash
+```
+
+From the shell prompt, perform a curl on the IP address obtained in the previous
+step.
 
 ### Use the Event Bus to modify a SimpleExampleServiceInstace ###
 
