@@ -17,8 +17,7 @@
 import json
 import os
 import sys
-from synchronizers.new_base.eventstep import EventStep
-from synchronizers.new_base.modelaccessor import *
+from xossynchronizer.event_steps.eventstep import EventStep
 from xosconfig import Config
 from multistructlog import create_logger
 
@@ -36,7 +35,7 @@ class SimpleExampleEventStep(EventStep):
         service_instance_name = value["service_instance"]
         tenant_message = value["tenant_message"]
 
-        objs = SimpleExampleServiceInstance.objects.filter(name=service_instance_name)
+        objs = self.model_accessor.SimpleExampleServiceInstance.objects.filter(name=service_instance_name)
         if not objs:
             raise Exception("failed to find %s" % service_instance_name)
 

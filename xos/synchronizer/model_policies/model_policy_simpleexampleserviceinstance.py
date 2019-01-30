@@ -16,8 +16,8 @@
 import base64
 import jinja2
 import json
-from synchronizers.new_base.modelaccessor import *
-from synchronizers.new_base.policy import Policy
+import os
+from xossynchronizer.model_policies.policy import Policy
 
 from xosconfig import Config
 from multistructlog import create_logger
@@ -57,8 +57,10 @@ class SimpleExampleServiceInstancePolicy(Policy):
     def handle_update(self, service_instance):
         if not service_instance.compute_instance:
             # TODO: Break dependency
-            compute_service = KubernetesService.objects.first()
-            compute_service_instance_class = Service.objects.get(id=compute_service.id).get_service_instance_class()
+            compute_service = self.model_accessor.KubernetesService.objects.first()
+            compute_service_instance_class = self.model_accessor.Service.objects.get(
+                id=compute_service.id
+            ).get_service_instance_class()
 
             exampleservice = service_instance.owner.leaf_model
 
@@ -74,11 +76,11 @@ class SimpleExampleServiceInstancePolicy(Policy):
 
             # Create a configmap and attach it to the compute instance
             data = {"index.html": self.render_index(service_instance)}
-            cfmap = KubernetesConfigMap(name="simpleexampleserviceinstance-map-%s" % service_instance.id,
+            cfmap = self.model_accessor.KubernetesConfigMap(name="simpleexampleserviceinstance-map-%s" % service_instance.id,
                                       trust_domain=slice.trust_domain,
                                       data=json.dumps(data))
             cfmap.save()
-            cfmap_mnt = KubernetesConfigVolumeMount(config=cfmap,
+            cfmap_mnt = self.model_accessor.KubernetesConfigVolumeMount(config=cfmap,
                                                     service_instance=compute_service_instance,
                                                     mount_path="/usr/local/apache2/htdocs")
             cfmap_mnt.save()
@@ -86,11 +88,14 @@ class SimpleExampleServiceInstancePolicy(Policy):
             # Create a secret and attach it to the compute instance
             data = {"service_secret.txt": base64.b64encode(str(exampleservice.service_secret)),
                     "tenant_secret.txt": base64.b64encode(str(service_instance.tenant_secret))}
-            secret = KubernetesSecret(name="simpleexampleserviceinstance-secret-%s" % service_instance.id,
+            secret = self.model_accessor.KubernetesSecret(name="simpleexampleserviceinstance-secret-%s" % service_instance.id,
                                       trust_domain=slice.trust_domain,
                                       data=json.dumps(data))
             secret.save()
-            secret_mnt = KubernetesSecretVolumeMount(secret=secret, service_instance=compute_service_instance, mount_path="/usr/local/apache2/secrets")
+            secret_mnt = self.model_accessor.KubernetesSecretVolumeMount(
+                secret=secret,
+                service_instance=compute_service_instance,
+                mount_path="/usr/local/apache2/secrets")
             secret_mnt.save()
 
             compute_service_instance.no_sync = False

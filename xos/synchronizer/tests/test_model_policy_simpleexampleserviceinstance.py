@@ -33,6 +33,7 @@ class TestSimpleExampleServiceInstancePolicy(unittest.TestCase):
                                                     ("kubernetes-service", "kubernetes.xproto")] )
 
         self.MockObjectList = self.unittest_setup["MockObjectList"]
+        self.model_accessor = self.unittest_setup["model_accessor"]
 
         sys.path.append(os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), "../model_policies"))
 
@@ -66,7 +67,7 @@ class TestSimpleExampleServiceInstancePolicy(unittest.TestCase):
                                               owner=self.service, tenant_message="world", tenant_secret="l3tm31n")
             si.embedded_images = self.MockObjectList([])
 
-            step = self.policy_class()
+            step = self.policy_class(model_accessor=self.model_accessor)
 
             desired_data = json.dumps({"index.html": step.render_index(si)})
 
@@ -136,7 +137,7 @@ class TestSimpleExampleServiceInstancePolicy(unittest.TestCase):
             si.compute_instance = ksi
             ksi.kubernetes_config_volume_mounts = self.MockObjectList([cfm_mnt])
 
-            step = self.policy_class()
+            step = self.policy_class(model_accessor=self.model_accessor)
 
             desired_data = json.dumps({"index.html": step.render_index(si)})
 
@@ -166,7 +167,7 @@ class TestSimpleExampleServiceInstancePolicy(unittest.TestCase):
             k8s_service_objects.return_value = [self.k8s_service]
             service_objects.return_value = [self.k8s_service, self.service]
 
-            step = self.policy_class()
+            step = self.policy_class(model_accessor=self.model_accessor)
 
             si = SimpleExampleServiceInstance(name="test-simple-instance",
                                               id=1112,
@@ -205,7 +206,7 @@ class TestSimpleExampleServiceInstancePolicy(unittest.TestCase):
                                             name="simpleexampleserviceinstance-1112")
             si.compute_instance = ksi
 
-            step = self.policy_class()
+            step = self.policy_class(model_accessor=self.model_accessor)
 
             step.handle_delete(si)
 

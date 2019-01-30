@@ -16,24 +16,15 @@
 
 import os
 import sys
-from synchronizers.new_base.syncstep import SyncStep
-from synchronizers.new_base.modelaccessor import *
+from xossynchronizer.steps.syncstep import SyncStep
 from xosconfig import Config
 from multistructlog import create_logger
 
 log = create_logger(Config().get('logging'))
 
 class SyncSimpleExampleServiceInstance(SyncStep):
-
-    provides = [SimpleExampleServiceInstance]
-
-    observes = SimpleExampleServiceInstance
-
+    observes = "SimpleExampleServiceInstance"
     requested_interval = 0
-
-    template_name = "simpleexampleserviceinstance_playbook.yaml"
-
-    service_key_name = "/opt/xos/synchronizers/exampleservicenew/simpleexampleservice_private_key"
 
     def __init__(self, *args, **kwargs):
         super(SyncSimpleExampleServiceInstance, self).__init__(*args, **kwargs)
