@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# docker build -t xosproject/simpleexampleservice-synchronizer:candidate -f Dockerfile.synchronizer .
+
 # xosproject/simpleexampleservice-synchronizer
 
-FROM xosproject/xos-synchronizer-base:2.1.54
+FROM xosproject/xos-synchronizer-base:2.2.1
 
 COPY xos/synchronizer /opt/xos/synchronizers/simpleexampleservice
 COPY VERSION /opt/xos/synchronizers/simpleexampleservice/
