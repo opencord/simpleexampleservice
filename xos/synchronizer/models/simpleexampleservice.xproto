@@ -7,11 +7,9 @@ message SimpleExampleService (Service){
 
     required string service_message = 1 [
         help_text = "Service Message to display in web page",
-        db_index = False,
         max_length = 254];
     optional string service_secret = 2 [
-        help_text = "Service Secret to place in a file",
-        db_index = False];
+        help_text = "Service Secret to place in a file"];
 }
 
 // Note: Named ColorNew to prevent name collision with ExampleService's Color.
@@ -22,11 +20,9 @@ message ColorNew (XOSBase){
 
      required string name = 1 [
          help_text = "Name for this color",
-         db_index = False,
          max_length = 256];
      required string html_code = 2 [
          help_text = "HTML Code for this color",
-         db_index = False,
          max_length = 256];
 }
 
@@ -38,9 +34,7 @@ message ServiceInstanceWithCompute2 (ServiceInstance) {
 
     optional manytoone compute_instance->ComputeServiceInstance:service_instance_with_computes = 1:1001 [
         help_text = "ComputeServiceInstance that holds compute resources for this ServiceInstance",
-        blank=True,
-        db_index=True,
-        null=True];
+        db_index=True];
 }
 
 message SimpleExampleServiceInstance (ServiceInstanceWithCompute2){
@@ -49,7 +43,6 @@ message SimpleExampleServiceInstance (ServiceInstanceWithCompute2){
 
      required string tenant_message = 1 [
          help_text = "Tenant Message to Display",
-         db_index = False,
          max_length = 254];
      optional manytoone foreground_color->ColorNew:serviceinstance_foreground_colors = 2:1001 [
          help_text = "Foreground color to use in web page",
@@ -58,8 +51,7 @@ message SimpleExampleServiceInstance (ServiceInstanceWithCompute2){
          help_text = "Background color to use in web page",
          db_index = True];
      optional string tenant_secret = 4 [
-         help_text = "Tenant Secret to place in a file",
-         db_index = False];
+         help_text = "Tenant Secret to place in a file"];
 }
 
 // Note: Named EmbeddedImageNew to prevent name collision with ExampleService's EmbeddedImage.
@@ -70,11 +62,9 @@ message EmbeddedImageNew (XOSBase){
 
      required string name = 1 [
          help_text = "Name for this image",
-         db_index = False,
          max_length = 256];
      required string url = 2 [
          help_text = "URL for this image",
-         db_index = False,
          max_length = 256];
      optional manytoone serviceinstance->SimpleExampleServiceInstance:embedded_images = 3:1001 [
          help_text = "ServiceInstance that represents the web page where this embedded image should be placed",
