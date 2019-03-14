@@ -91,7 +91,7 @@ We will demonstrate using TOSCA to create the `SimpleExampleServiceInstance`, bu
 If you've already checked out the CORD code, for example using repo, then make note the path to the `simpleexampleservice` code as we'll be using it in a few minutes:
 
 ```bash
-SIMPLEEXAMPLESERVICE_PATH=~/cord/orchestration/xos_services/simpleexampleservice
+SIMPLEEXAMPLESERVICE_PATH=~/cord/orchestration/xos-services/simpleexampleservice
 ```
 
 Otherwise, check out the simpleexampleservice repository now:
@@ -161,9 +161,11 @@ helm install --name cord-kafka --set replicas=1 incubator/kafka
 
 ```python
 import json
-from kafka import KafkaProducer
-producer = KafkaProducer(bootstrap_servers="cord-kafka")
-producer.send("SimpleExampleEvent", json.dumps({"service_instance": "My Simple Example Service Instance", "tenant_message": "Earth"}))
+from confluent_kafka import Producer
+producer_config = {"bootstrap.servers": "cord-kafka"}
+producer = Producer(**producer_config)
+event = {"service_instance": "My Simple Example Service Instance", "tenant_message": "Earth"}
+producer.produce("SimpleExampleEvent", json.dumps(event), key=event["service_instance"])
 producer.flush()
 ```
 
