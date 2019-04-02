@@ -24,6 +24,7 @@ from multistructlog import create_logger
 
 log = create_logger(Config().get('logging'))
 
+
 class SimpleExampleServiceInstancePolicy(Policy):
     model_name = "SimpleExampleServiceInstance"
 
@@ -43,7 +44,7 @@ class SimpleExampleServiceInstancePolicy(Policy):
         if service_instance.background_color:
             fields["background_color"] = service_instance.background_color.html_code
 
-        images=[]
+        images = []
         for image in service_instance.embedded_images.all():
             images.append({"name": image.name,
                            "url": image.url})
@@ -70,27 +71,28 @@ class SimpleExampleServiceInstancePolicy(Policy):
             # TODO: What if there is no default image?
             image = slice.default_image
 
-            name="simpleexampleserviceinstance-%s" % service_instance.id
-            compute_service_instance = compute_service_instance_class(slice=slice, owner=compute_service, image=image, name=name, no_sync=True)
+            name = "simpleexampleserviceinstance-%s" % service_instance.id
+            compute_service_instance = compute_service_instance_class(
+                slice=slice, owner=compute_service, image=image, name=name, no_sync=True)
             compute_service_instance.save()
 
             # Create a configmap and attach it to the compute instance
             data = {"index.html": self.render_index(service_instance)}
-            cfmap = self.model_accessor.KubernetesConfigMap(name="simpleexampleserviceinstance-map-%s" % service_instance.id,
-                                      trust_domain=slice.trust_domain,
-                                      data=json.dumps(data))
+            cfmap = self.model_accessor.KubernetesConfigMap(
+                name="simpleexampleserviceinstance-map-%s" %
+                service_instance.id, trust_domain=slice.trust_domain, data=json.dumps(data))
             cfmap.save()
             cfmap_mnt = self.model_accessor.KubernetesConfigVolumeMount(config=cfmap,
-                                                    service_instance=compute_service_instance,
-                                                    mount_path="/usr/local/apache2/htdocs")
+                                                                        service_instance=compute_service_instance,
+                                                                        mount_path="/usr/local/apache2/htdocs")
             cfmap_mnt.save()
 
             # Create a secret and attach it to the compute instance
             data = {"service_secret.txt": base64.b64encode(str(exampleservice.service_secret)),
                     "tenant_secret.txt": base64.b64encode(str(service_instance.tenant_secret))}
-            secret = self.model_accessor.KubernetesSecret(name="simpleexampleserviceinstance-secret-%s" % service_instance.id,
-                                      trust_domain=slice.trust_domain,
-                                      data=json.dumps(data))
+            secret = self.model_accessor.KubernetesSecret(
+                name="simpleexampleserviceinstance-secret-%s" %
+                service_instance.id, trust_domain=slice.trust_domain, data=json.dumps(data))
             secret.save()
             secret_mnt = self.model_accessor.KubernetesSecretVolumeMount(
                 secret=secret,

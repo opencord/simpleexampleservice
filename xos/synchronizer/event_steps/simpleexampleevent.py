@@ -15,13 +15,12 @@
 
 
 import json
-import os
-import sys
 from xossynchronizer.event_steps.eventstep import EventStep
 from xosconfig import Config
 from multistructlog import create_logger
 
 log = create_logger(Config().get('logging'))
+
 
 class SimpleExampleEventStep(EventStep):
     topics = ["SimpleExampleEvent"]
@@ -41,4 +40,4 @@ class SimpleExampleEventStep(EventStep):
 
         for obj in objs:
             obj.tenant_message = tenant_message
-            obj.save(always_update_timestamp = True)
+            obj.save(always_update_timestamp=True)
