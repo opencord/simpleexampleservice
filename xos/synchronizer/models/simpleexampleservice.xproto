@@ -7,9 +7,10 @@ message SimpleExampleService (Service){
 
     required string service_message = 1 [
         help_text = "Service Message to display in web page",
-        max_length = 254];
+        max_length = 256];
     optional string service_secret = 2 [
-        help_text = "Service Secret to place in a file"];
+        help_text = "Service Secret to place in a file",
+        text = True];
 }
 
 // Note: Named ColorNew to prevent name collision with ExampleService's Color.
@@ -43,7 +44,7 @@ message SimpleExampleServiceInstance (ServiceInstanceWithCompute2){
 
      required string tenant_message = 1 [
          help_text = "Tenant Message to Display",
-         max_length = 254];
+         max_length = 256];
      optional manytoone foreground_color->ColorNew:serviceinstance_foreground_colors = 2:1001 [
          help_text = "Foreground color to use in web page",
          db_index = True];
@@ -51,7 +52,8 @@ message SimpleExampleServiceInstance (ServiceInstanceWithCompute2){
          help_text = "Background color to use in web page",
          db_index = True];
      optional string tenant_secret = 4 [
-         help_text = "Tenant Secret to place in a file"];
+         help_text = "Tenant Secret to place in a file",
+         text = True];
 }
 
 // Note: Named EmbeddedImageNew to prevent name collision with ExampleService's EmbeddedImage.
