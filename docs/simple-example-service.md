@@ -42,7 +42,7 @@ The following subsections work through a quick demonstration of `SimpleExampleSe
 
 ### Prerequisites ###
 
-This document assumes that you have already installed Kubernetes in your development environment. If you haven't done so already, see [QuickStart](../quickstart.md).
+This document assumes that you have already installed Kubernetes in your development environment. If you haven't done so already, see [QuickStart](../quickstart/quickstart.md).
 
 > Note: Depending on the method that was used to deploy your Kubernetes installation, your installation may require root privilege to interact with Kubernetes. If so, then you may need to use `sudo` with many of the commands in this tutorial, for example `sudo helm init` instead of `helm init`. 
 
@@ -136,24 +136,17 @@ used to retrieve a list. Any of the containers will do (e.g., one of the synchro
 containers).
 
 ```bash
-kubectl exec -it <pod-name> bash
+kubectl exec -it <pod-name> sh
 ```
 
 From the shell prompt, perform a curl on the IP address obtained in the previous
-step.
+step. You might need to install curl first. If so, try using either `apk add curl` or
+`apt-get install curl` depending on whether the container you're using is based on
+alpine or ubuntu.
 
 ### Use the Event Bus to modify a SimpleExampleServiceInstace ###
 
 The event bus is an optional mechanism that may be used to interact with services. `SimpleExampleService` implements a single `EventStep`, which listens on a Kafka topic and allows the `tenant_message` to be updated.  
-
-* Launch the Kafka Helm Chart, if you have not already done so:
-
-```bash
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --name cord-kafka --set replicas=1 incubator/kafka
-```
-
-* Wait for Kafka to be ready. Use `kubectl get pods` to make sure the Kafka containers are in Running state. 
 
 * Send an Event to update a web page
 
