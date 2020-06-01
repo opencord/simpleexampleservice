@@ -1,4 +1,3 @@
-
 # Copyright 2017-present Open Networking Foundation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +14,11 @@
 
 
 name: simpleexampleservice
-core_version: ">=2.2.1"
+core_version: ">=4.0.0"
 accessor:
-  username: xosadmin@opencord.org
-  password: "@/opt/xos/services/simpleexampleservice/credentials/xosadmin@opencord.org"
+  username: admin@opencord.org
+  password: letmein
+  endpoint: xos-core:50051
 required_models:
   - SimpleExampleService
   - SimpleExampleServiceInstance

@@ -17,13 +17,16 @@
 import os
 import sys
 from xossynchronizer.steps.syncstep import SyncStep
+from xossynchronizer.modelaccessor import SimpleExampleService, SimpleExampleServiceInstance
+
 from xosconfig import Config
 from multistructlog import create_logger
 
 log = create_logger(Config().get('logging'))
 
 class SyncSimpleExampleServiceInstance(SyncStep):
-    observes = "SimpleExampleServiceInstance"
+    provides = [SimpleExampleServiceInstance]
+    observes = SimpleExampleServiceInstance
     requested_interval = 0
 
     def __init__(self, *args, **kwargs):

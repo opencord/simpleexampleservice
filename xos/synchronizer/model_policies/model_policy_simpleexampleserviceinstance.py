@@ -29,7 +29,7 @@ class SimpleExampleServiceInstancePolicy(Policy):
     model_name = "SimpleExampleServiceInstance"
 
     def handle_create(self, service_instance):
-        return self.handle_update(service_instance)
+        self.handle_update(service_instance)
 
     def render_index(self, service_instance):
         service = service_instance.owner.leaf_model
